@@ -2,8 +2,9 @@ import React, { createContext, useState } from 'react';
 export const Context = createContext();
 
 export const DataProvider = ({ children }) => {
-  const [cartObj, setCartObj] = useState({
-    products: [],
+  const [carObj, setCarObj] = useState({
+    id: '',
+    productos: [],
   });
   const [logged, setLogged] = useState({
     isLoggedIn: false,
@@ -11,7 +12,7 @@ export const DataProvider = ({ children }) => {
   });
 
   return (
-    <Context.Provider value={{ cartObj, setCartObj, logged, setLogged }}>
+    <Context.Provider value={{ carObj, setCarObj, logged, setLogged }}>
       {children}
     </Context.Provider>
   );

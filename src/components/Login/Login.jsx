@@ -1,17 +1,17 @@
 import React, { useContext, useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Context } from '../../Context/Context';
 import axios from 'axios';
 
 const Login = () => {
   const baseUrl = process.env.REACT_APP_API_URL;
+  const navigate = useNavigate();
+  const { logged, setLogged } = useContext(Context);
 
-  const { logged } = useContext(Context);
-  const { setLogged } = useContext(Context);
-
-  const { errorMessage, setErrorMessage } = useState(false);
+  const { errorMessage, setErrorMessage } = useState(true);
 
   const goSignup = () => {
-    window.location.href = '/signup';
+    navigate('/signup');
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -21,24 +21,29 @@ const Login = () => {
     formData.forEach((item, index) => {
       data[index] = item;
     });
-    const response = await axios.post(`${baseUrl}/login`, data);
+    try {
+      const response = await axios.post(`${baseUrl}/login`, data);
 
-    if (response.data.isLoggedIn) {
-      setLogged({
-        isLoggedIn: true,
-        user: response.data.user,
-      });
+      if (response.data.isLoggedIn) {
+        setLogged({
+          isLoggedIn: true,
+          user: response.data.user,
+        });
 
-      console.log(response.data.user);
-    } else {
-      setErrorMessage(true);
+        setTimeout(() => {
+          navigate('/productos');
+        }, 2000);
+      } else {
+        setErrorMessage(true);
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
   useEffect(() => {
-    handleSubmit();
     // eslint-disable-next-line
-  }, [errorMessage]);
+  }, [logged, errorMessage]);
 
   return (
     <>
@@ -51,17 +56,17 @@ const Login = () => {
       )}
       <div className='container'>
         {logged.isLoggedIn ? (
-          <h1>Welcome</h1>
+          <>
+            <h1>Welcome {logged.user.userName}</h1>
+            <Link className='btn btn-danger' to='/logout'>
+              Logout
+            </Link>
+          </>
         ) : (
           <div className='jumbotron'>
             <h1>LOGIN</h1>
             <br />
-            <form
-              className='form'
-              role='form'
-              autoComplete='off'
-              onSubmit={handleSubmit}
-            >
+            <form className='form' autoComplete='off' onSubmit={handleSubmit}>
               <div className='form-group mb-3'>
                 <input
                   name='username'

@@ -1,14 +1,15 @@
 import React from 'react';
 
-const isLoggedIn = false;
-
-const LoginLogoutBtn = () => {
+const LoginLogoutBtn = ({ show }) => {
+  const isLoggedIn = show.isLoggedIn;
   return (
     <li className='nav-item ms-auto'>
       {isLoggedIn && (
-        <a className='nav-link btn btn-danger btn-logout' href='/logout'>
-          Logout
-        </a>
+        <>
+          <a className='nav-link btn btn-danger btn-logout' href='/logout'>
+            Logout
+          </a>
+        </>
       )}
 
       {!isLoggedIn && (
